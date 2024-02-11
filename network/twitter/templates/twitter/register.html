@@ -1,0 +1,24 @@
+{% extends 'twitter/layout.html' %}
+
+{% block body %}
+    <h1>Register</h1>
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" class="form-control" autofocus name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input type="email" class="form-control" name="email" placeholder="Email Address">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="confirmation" placeholder="Confirm Password">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Register">
+    </form>
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+{% endblock %}
