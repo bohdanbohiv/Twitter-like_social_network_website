@@ -2,6 +2,7 @@
 
 {% block body %}
     <h1>Register</h1>
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
