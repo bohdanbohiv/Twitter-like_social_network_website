@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
@@ -58,6 +59,8 @@ def search_user(request: HttpRequest):
 def follow(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
         user = get_object_or_404(User, id=pk)
+        if user.id == request.user.id:
+            raise PermissionDenied
         request.user.followings.add(user)
         request.user.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
@@ -66,6 +69,8 @@ def follow(request: HttpRequest, pk: int):
 def unfollow(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
         user = get_object_or_404(User, id=pk)
+        if user.id == request.user.id:
+            raise PermissionDenied
         request.user.followings.remove(user)
         request.user.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))

@@ -3,7 +3,7 @@
 {% block title %}{{ profile.username }}{% endblock %}
 
 {% block body %}
-    {% if profile is not user %}
+    {% if profile.id != user.id %}
         {% if user.is_authenticated and profile in user.followings.all %}
             <form method=POST, action="{% url 'unfollow' profile.id %}">
                 {% csrf_token %}
