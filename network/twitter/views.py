@@ -1,16 +1,16 @@
-from wsgiref.util import request_uri
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.http import HttpRequest
 from django.shortcuts import redirect, render
 
 from .models import User
 
 # Create your views here.
 
-def index(request):
+def index(request: HttpRequest):
     return render(request, 'twitter/index.html')
 
-def register(request):
+def register(request: HttpRequest):
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -29,7 +29,7 @@ def register(request):
         return redirect('index')
     return render(request, 'twitter/register.html')
 
-def login_view(request):
+def login_view(request: HttpRequest):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -42,6 +42,11 @@ def login_view(request):
                           {'message': 'Invalid username and/or password.'})
     return render(request, 'twitter/login.html')
 
-def logout_view(request):
+def logout_view(request: HttpRequest):
     logout(request)
     return redirect('index')
+
+def search_user(request: HttpRequest):
+    search = request.GET['search']
+    searched = User.objects.filter(username__contains=search)
+    return render(request, 'twitter/search_user.html', {'search': search, 'searched': searched})

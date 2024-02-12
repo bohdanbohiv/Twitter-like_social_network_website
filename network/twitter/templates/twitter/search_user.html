@@ -1,0 +1,16 @@
+{% extends 'twitter/layout.html' %}
+
+{% block body %}
+    <h1>Users</h1>
+    <h2>You searched for: {{ search }}</h2>
+    {% if searched %}
+        <ul>
+            {% for user in searched %}
+                <li>@{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        No such user found!
+    {% endif %}
+
+{% endblock %}
