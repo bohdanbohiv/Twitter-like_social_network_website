@@ -4,14 +4,17 @@
 
 {% block body %}
     {% if profile is not user %}
-        <form method=POST>
-            {% csrf_token %}
-            {% if user.is_authenticated and profile in user.followings.all %}
-                <button type="submit" class="btn btn-outline-danger" name="following" value="unfollow">Unfollow</button>
-            {% else %}
-                <button type="submit" class="btn btn-outline-success" name="following" value="follow">Follow</button>
-            {% endif %}
-        </form>
+        {% if user.is_authenticated and profile in user.followings.all %}
+            <form method=POST, action="{% url 'unfollow' profile.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">Unfollow</button>
+            </form>
+        {% else %}
+            <form method=POST, action="{% url 'follow' profile.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-success">Follow</button>
+            </form>
+        {% endif %}
     {% endif %}
     <h1>{{ profile.username }}</h1>
     {{ profile.followings.count }} Following

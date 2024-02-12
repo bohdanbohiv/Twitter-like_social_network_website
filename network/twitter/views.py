@@ -54,3 +54,19 @@ def search_user(request: HttpRequest):
     search = request.GET['search']
     searched = User.objects.filter(username__contains=search)
     return render(request, 'twitter/search_user.html', {'search': search, 'searched': searched})
+
+def follow(request: HttpRequest, pk: int):
+    if request.user.is_authenticated:
+        user = get_object_or_404(User, id=pk)
+        request.user.followings.add(user)
+        request.user.save()
+        return redirect(request.META.get('HTTP_REFERER', 'index'))
+    return redirect('login')
+
+def unfollow(request: HttpRequest, pk: int):
+    if request.user.is_authenticated:
+        user = get_object_or_404(User, id=pk)
+        request.user.followings.remove(user)
+        request.user.save()
+        return redirect(request.META.get('HTTP_REFERER', 'index'))
+    return redirect('login')
