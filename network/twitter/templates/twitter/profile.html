@@ -1,0 +1,15 @@
+{% extends 'twitter/layout.html' %}
+
+{% block body %}
+    {% if profile %}
+        {% if profile is not user %}
+            <button type="button" class="btn btn-primary">Follow</button>
+        {% endif %}
+        <h1>{{ profile.username }}</h1>
+        {{ profile.followings.count }} Following
+        {{ profile.followers.count }} Followers
+    {% else %}
+        <h1>This account doesn't exist.</h1>
+        Try searching for another.
+    {% endif %}
+{% endblock %}

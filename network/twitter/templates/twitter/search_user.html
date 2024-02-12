@@ -6,11 +6,10 @@
     {% if searched %}
         <ul>
             {% for user in searched %}
-                <li>@{{ user.username }}</li>
+                <li><a href="{% url 'profile' user.id %}">@{{ user.username }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
         No such user found!
     {% endif %}
-
 {% endblock %}

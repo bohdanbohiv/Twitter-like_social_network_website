@@ -46,6 +46,10 @@ def logout_view(request: HttpRequest):
     logout(request)
     return redirect('index')
 
+def profile(request: HttpRequest, pk: int):
+    user = User.objects.get(id=pk)
+    return render(request, 'twitter/profile.html', {'profile': user})
+
 def search_user(request: HttpRequest):
     search = request.GET['search']
     searched = User.objects.filter(username__contains=search)
