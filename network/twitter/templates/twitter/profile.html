@@ -17,6 +17,18 @@
         {% endif %}
     {% endif %}
     <h1>{{ profile.username }}</h1>
-    {{ profile.followings.count }} Following
-    {{ profile.followers.count }} Followers
+    <div>
+        <span>{{ profile.followings.count }} Following</span>
+        <span>{{ profile.followers.count }} Followers</span>
+    </div>
+    {% for post in posts %}
+        <div class="card">
+            <div class="card-header">{{ post.author.username }} at {{ post.created_at }}</div>
+            <div class="card-body">
+                <p class="card-text">{{ post.body }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <span>No posts.</span>
+    {% endfor%}
 {% endblock %}

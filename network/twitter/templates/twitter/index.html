@@ -3,5 +3,21 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <h1>Hello World!</h1>
+    <form method=POST action="{% url 'post' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" placeholder="Write a post" rows="3" maxlength="280" name="body" required></textarea>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </div>
+    </form>
+    {% for post in posts %}
+        <div class="card">
+            <div class="card-header">{{ post.author.username }} at {{ post.created_at }}</div>
+            <div class="card-body">
+                <p class="card-text">{{ post.body }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <span>No posts.</span>
+    {% endfor%}
 {% endblock %}

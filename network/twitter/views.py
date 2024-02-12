@@ -4,12 +4,17 @@ from django.db import IntegrityError
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import User
+from .models import Post, User
 
 # Create your views here.
 
 def index(request: HttpRequest):
-    return render(request, 'twitter/index.html')
+    if request.user.is_authenticated:
+        posts = Post.objects.filter(author__in=request.user.followings.all())
+    else:
+        posts = Post.objects
+    return render(request, 'twitter/index.html', {
+        'posts': posts.order_by('created_at').reverse()})
 
 def register(request: HttpRequest):
     if request.method == 'POST':
@@ -49,12 +54,14 @@ def logout_view(request: HttpRequest):
 
 def profile(request: HttpRequest, pk: int):
     user = get_object_or_404(User, id=pk)
-    return render(request, 'twitter/profile.html', {'profile': user})
+    return render(request, 'twitter/profile.html', {
+        'profile': user, 'posts': user.posts.order_by('created_at').reverse()})
 
 def search_user(request: HttpRequest):
     search = request.GET['search']
     searched = User.objects.filter(username__contains=search)
-    return render(request, 'twitter/search_user.html', {'search': search, 'searched': searched})
+    return render(request, 'twitter/search_user.html', {
+        'search': search, 'searched': searched})
 
 def follow(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
@@ -73,5 +80,12 @@ def unfollow(request: HttpRequest, pk: int):
             raise PermissionDenied
         request.user.followings.remove(user)
         request.user.save()
+        return redirect(request.META.get('HTTP_REFERER', 'index'))
+    return redirect('login')
+
+def post(request: HttpRequest):
+    if request.user.is_authenticated:
+        post = Post(author=request.user, body=request.POST['body'])
+        post.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
