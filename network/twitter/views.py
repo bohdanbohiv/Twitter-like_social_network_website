@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpRequest
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import User
 
@@ -47,7 +47,7 @@ def logout_view(request: HttpRequest):
     return redirect('index')
 
 def profile(request: HttpRequest, pk: int):
-    user = User.objects.get(id=pk)
+    user = get_object_or_404(User, id=pk)
     return render(request, 'twitter/profile.html', {'profile': user})
 
 def search_user(request: HttpRequest):

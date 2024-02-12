@@ -1,15 +1,19 @@
 {% extends 'twitter/layout.html' %}
 
+{% block title %}{{ profile.username }}{% endblock %}
+
 {% block body %}
-    {% if profile %}
-        {% if profile is not user %}
-            <button type="button" class="btn btn-primary">Follow</button>
-        {% endif %}
-        <h1>{{ profile.username }}</h1>
-        {{ profile.followings.count }} Following
-        {{ profile.followers.count }} Followers
-    {% else %}
-        <h1>This account doesn't exist.</h1>
-        Try searching for another.
+    {% if profile is not user %}
+        <form method=POST>
+            {% csrf_token %}
+            {% if user.is_authenticated and profile in user.followings.all %}
+                <button type="submit" class="btn btn-outline-danger" name="following" value="unfollow">Unfollow</button>
+            {% else %}
+                <button type="submit" class="btn btn-outline-success" name="following" value="follow">Follow</button>
+            {% endif %}
+        </form>
     {% endif %}
+    <h1>{{ profile.username }}</h1>
+    {{ profile.followings.count }} Following
+    {{ profile.followers.count }} Followers
 {% endblock %}
