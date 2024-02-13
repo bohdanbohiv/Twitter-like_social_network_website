@@ -11,5 +11,6 @@ urlpatterns = [
     path('search_user', views.search_user, name='search_user'),
     path('follow/<int:pk>', views.follow, name='follow'),
     path('unfollow/<int:pk>', views.unfollow, name='unfollow'),
-    path('post', views.post, name='post')
+    path('post', views.post, name='post'),
+    path('post/delete/<int:pk>', views.delete_post, name='delete_post')
 ]

@@ -89,3 +89,12 @@ def post(request: HttpRequest):
         post.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
+
+def delete_post(request: HttpRequest, pk: int):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, id=pk)
+        if request.user == post.author:
+            post.delete()
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
+        raise PermissionDenied
+    return redirect('login')
