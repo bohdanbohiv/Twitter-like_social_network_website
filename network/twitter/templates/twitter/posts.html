@@ -1,0 +1,27 @@
+{% for post in posts %}
+    <div class="card">
+        <div class="card-header d-flex">
+            {{ post.author.username }} at {{ post.created_at }}
+            {% if post.author == user %}
+                <form action="{% url 'delete_post' post.id %}" method=DELETE>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ post.body }}</p>
+        </div>
+        <div class="d-flex">
+            <form action="{% url 'like' post.id %}" method=POST>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
+                </button>
+            </form>
+            {{ post.num_of_likes }} Likes
+        </div>
+    </div>
+{% empty %}
+    <span>No posts.</span>
+{% endfor%}

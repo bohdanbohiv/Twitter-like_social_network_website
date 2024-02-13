@@ -22,6 +22,9 @@ def register(request: HttpRequest):
         email = request.POST['email']
         password = request.POST['password']
         confirmation = request.POST['confirmation']
+        if len(password) < 8:
+            return render(request, 'twitter/register.html',
+                        {'message': 'Password should contain atleast 8 chracters'})
         if password != confirmation:
             return render(request, 'twitter/register.html',
                           {'message': 'Passwords must match.'})
@@ -66,19 +69,12 @@ def search_user(request: HttpRequest):
 def follow(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
         user = get_object_or_404(User, id=pk)
-        if user.id == request.user.id:
+        if user == request.user:
             raise PermissionDenied
-        request.user.followings.add(user)
-        request.user.save()
-        return redirect(request.META.get('HTTP_REFERER', 'index'))
-    return redirect('login')
-
-def unfollow(request: HttpRequest, pk: int):
-    if request.user.is_authenticated:
-        user = get_object_or_404(User, id=pk)
-        if user.id == request.user.id:
-            raise PermissionDenied
-        request.user.followings.remove(user)
+        if user in request.user.followings.all():
+            request.user.followings.remove(user)
+        else:
+            request.user.followings.add(user)
         request.user.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
@@ -97,4 +93,14 @@ def delete_post(request: HttpRequest, pk: int):
             post.delete()
             return redirect(request.META.get('HTTP_REFERER', 'index'))
         raise PermissionDenied
+    return redirect('login')
+
+def like(request: HttpRequest, pk: int):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, id=pk)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+        return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')

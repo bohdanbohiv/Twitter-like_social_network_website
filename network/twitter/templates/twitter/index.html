@@ -10,14 +10,5 @@
             <button type="submit" class="btn btn-primary">Post</button>
         </div>
     </form>
-    {% for post in posts %}
-        <div class="card">
-            <div class="card-header">{{ post.author.username }} at {{ post.created_at }}</div>
-            <div class="card-body">
-                <p class="card-text">{{ post.body }}</p>
-            </div>
-        </div>
-    {% empty %}
-        <span>No posts.</span>
-    {% endfor%}
+    {% include 'twitter/posts.html' %}
 {% endblock %}
