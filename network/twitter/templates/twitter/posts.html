@@ -1,7 +1,9 @@
 {% for post in posts %}
     <div class="card">
         <div class="card-header d-flex">
-            {{ post.author.username }} at {{ post.created_at }}
+            <span>
+                <a href="{% url 'profile' post.author.id %}">{{ post.author.username }}</a> at {{ post.created_at }}
+            </span>
             {% if post.author == user %}
                 <form action="{% url 'delete_post' post.id %}" method=DELETE>
                     {% csrf_token %}

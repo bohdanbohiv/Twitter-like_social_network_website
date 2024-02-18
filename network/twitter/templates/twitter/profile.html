@@ -15,8 +15,8 @@
     {% endif %}
     <h1>{{ profile.username }}</h1>
     <div>
-        <span>{{ profile.followings.count }} Following</span>
-        <span>{{ profile.followers.count }} Followers</span>
+        <a href="{% url 'followings' profile.id %}">{{ profile.followings.count }} Following</a>
+        <a href="{% url 'followers' profile.id %}">{{ profile.followers.count }} Followers</a>
     </div>
     {% include 'twitter/posts.html' %}
 {% endblock %}

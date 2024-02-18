@@ -104,3 +104,13 @@ def like(request: HttpRequest, pk: int):
             post.likes.add(request.user)
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
+
+def followings(request: HttpRequest, pk: int):
+    user = get_object_or_404(User, id=pk)
+    return render(request, 'twitter/followings.html', {'users': user.followings.all(),
+                                                       'profile': user})
+
+def followers(request: HttpRequest, pk: int):
+    user = get_object_or_404(User, id=pk)
+    return render(request, 'twitter/followers.html', {'users': user.followers.all(),
+                                                      'profile': user})
