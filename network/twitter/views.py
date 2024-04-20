@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError
 from django.http import HttpRequest
@@ -97,47 +98,43 @@ def search_user(request: HttpRequest):
     )
 
 
+@login_required
 def follow(request: HttpRequest, pk: int):
-    if request.user.is_authenticated:
-        user = get_object_or_404(User, id=pk)
-        if user == request.user:
-            raise PermissionDenied
-        if user in request.user.followings.all():
-            request.user.followings.remove(user)
-        else:
-            request.user.followings.add(user)
-        request.user.save()
-        return redirect(request.META.get('HTTP_REFERER', 'index'))
-    return redirect('login')
-
-
-def post(request: HttpRequest):
-    if request.user.is_authenticated:
-        post = Post(author=request.user, body=request.POST['body'])
-        post.save()
-        return redirect(request.META.get('HTTP_REFERER', 'index'))
-    return redirect('login')
-
-
-def delete_post(request: HttpRequest, pk: int):
-    if request.user.is_authenticated:
-        post = get_object_or_404(Post, id=pk)
-        if request.user == post.author:
-            post.delete()
-            return redirect(request.META.get('HTTP_REFERER', 'index'))
+    user = get_object_or_404(User, id=pk)
+    if user == request.user:
         raise PermissionDenied
-    return redirect('login')
+    if user in request.user.followings.all():
+        request.user.followings.remove(user)
+    else:
+        request.user.followings.add(user)
+    request.user.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 
-def like(request: HttpRequest, pk: int):
-    if request.user.is_authenticated:
-        post = get_object_or_404(Post, id=pk)
-        if request.user in post.likes.all():
-            post.likes.remove(request.user)
-        else:
-            post.likes.add(request.user)
+@login_required
+def post(request: HttpRequest):
+    post = Post(author=request.user, body=request.POST['body'])
+    post.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+
+@login_required
+def delete_post(request: HttpRequest, pk: int):
+    post = get_object_or_404(Post, id=pk)
+    if request.user == post.author:
+        post.delete()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
-    return redirect('login')
+    raise PermissionDenied
+
+
+@login_required
+def like(request: HttpRequest, pk: int):
+    post = get_object_or_404(Post, id=pk)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 
 def followings(request: HttpRequest, pk: int):
