@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.password_validation import password_validators_help_text_html, validate_password
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.html import format_html, format_html_join
 
 from .models import Post, User
 
@@ -28,11 +30,16 @@ def register(request: HttpRequest):
         email = request.POST['email']
         password = request.POST['password']
         confirmation = request.POST['confirmation']
-        if len(password) < 8:
+        try:
+            validate_password(password)
+        except ValidationError as error:
+            message_items = format_html_join(
+                '', '<li>{}</li>', ((message,) for message in error.messages)
+            )
             return render(
                 request,
                 'twitter/register.html',
-                {'message': 'Password should contain atleast 8 chracters'}
+                {'message': format_html('<ul>{}</ul>', message_items)}
             )
         if password != confirmation:
             return render(
@@ -51,7 +58,11 @@ def register(request: HttpRequest):
             )
         login(request, user)
         return redirect('index')
-    return render(request, 'twitter/register.html')
+    return render(
+        request,
+        'twitter/register.html',
+        {'message': password_validators_help_text_html()}
+    )
 
 
 def login_view(request: HttpRequest):
