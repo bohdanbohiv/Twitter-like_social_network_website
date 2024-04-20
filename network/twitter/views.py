@@ -8,13 +8,18 @@ from .models import Post, User
 
 # Create your views here.
 
+
 def index(request: HttpRequest):
     if request.user.is_authenticated:
         posts = Post.objects.filter(author__in=request.user.followings.all())
     else:
         posts = Post.objects
-    return render(request, 'twitter/index.html', {
-        'posts': posts.order_by('created_at').reverse()})
+    return render(
+        request,
+        'twitter/index.html',
+        {'posts': posts.order_by('created_at').reverse()}
+    )
+
 
 def register(request: HttpRequest):
     if request.method == 'POST':
@@ -23,20 +28,30 @@ def register(request: HttpRequest):
         password = request.POST['password']
         confirmation = request.POST['confirmation']
         if len(password) < 8:
-            return render(request, 'twitter/register.html',
-                        {'message': 'Password should contain atleast 8 chracters'})
+            return render(
+                request,
+                'twitter/register.html',
+                {'message': 'Password should contain atleast 8 chracters'}
+            )
         if password != confirmation:
-            return render(request, 'twitter/register.html',
-                          {'message': 'Passwords must match.'})
+            return render(
+                request,
+                'twitter/register.html',
+                {'message': 'Passwords must match.'}
+            )
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(request, 'twitter/register.html',
-                        {'message': 'Username already taken.'})
+            return render(
+                request,
+                'twitter/register.html',
+                {'message': 'Username already taken.'}
+            )
         login(request, user)
         return redirect('index')
     return render(request, 'twitter/register.html')
+
 
 def login_view(request: HttpRequest):
     if request.method == 'POST':
@@ -47,24 +62,40 @@ def login_view(request: HttpRequest):
             login(request, user)
             return redirect('index')
         else:
-            return render(request, 'twitter/login.html',
-                          {'message': 'Invalid username and/or password.'})
+            return render(
+                request,
+                'twitter/login.html',
+                {'message': 'Invalid username and/or password.'}
+            )
     return render(request, 'twitter/login.html')
+
 
 def logout_view(request: HttpRequest):
     logout(request)
     return redirect('index')
 
+
 def profile(request: HttpRequest, pk: int):
     user = get_object_or_404(User, id=pk)
-    return render(request, 'twitter/profile.html', {
-        'profile': user, 'posts': user.posts.order_by('created_at').reverse()})
+    return render(
+        request,
+        'twitter/profile.html',
+        {
+            'profile': user,
+            'posts': user.posts.order_by('created_at').reverse()
+        }
+    )
+
 
 def search_user(request: HttpRequest):
     search = request.GET['search']
     searched = User.objects.filter(username__contains=search)
-    return render(request, 'twitter/search_user.html', {
-        'search': search, 'searched': searched})
+    return render(
+        request,
+        'twitter/search_user.html',
+        {'search': search, 'searched': searched}
+    )
+
 
 def follow(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
@@ -79,12 +110,14 @@ def follow(request: HttpRequest, pk: int):
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
 
+
 def post(request: HttpRequest):
     if request.user.is_authenticated:
         post = Post(author=request.user, body=request.POST['body'])
         post.save()
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
+
 
 def delete_post(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
@@ -94,6 +127,7 @@ def delete_post(request: HttpRequest, pk: int):
             return redirect(request.META.get('HTTP_REFERER', 'index'))
         raise PermissionDenied
     return redirect('login')
+
 
 def like(request: HttpRequest, pk: int):
     if request.user.is_authenticated:
@@ -105,12 +139,20 @@ def like(request: HttpRequest, pk: int):
         return redirect(request.META.get('HTTP_REFERER', 'index'))
     return redirect('login')
 
+
 def followings(request: HttpRequest, pk: int):
     user = get_object_or_404(User, id=pk)
-    return render(request, 'twitter/followings.html', {'users': user.followings.all(),
-                                                       'profile': user})
+    return render(
+        request,
+        'twitter/followings.html',
+        {'users': user.followings.all(), 'profile': user}
+    )
+
 
 def followers(request: HttpRequest, pk: int):
     user = get_object_or_404(User, id=pk)
-    return render(request, 'twitter/followers.html', {'users': user.followers.all(),
-                                                      'profile': user})
+    return render(
+        request,
+        'twitter/followers.html',
+        {'users': user.followers.all(), 'profile': user}
+    )
