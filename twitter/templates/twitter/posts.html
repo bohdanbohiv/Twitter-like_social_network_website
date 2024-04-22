@@ -1,13 +1,17 @@
+{% load static %}
 {% for post in posts %}
+
     <div class="card">
-        <div class="card-header d-flex">
-            <span>
+        <div class="card-header d-flex justify-content-between">
+            <span id="userinfo">
                 <a href="{% url 'profile' post.author.id %}">{{ post.author.username }}</a> at {{ post.created_at }}
             </span>
             {% if post.author == user %}
-                <form action="{% url 'delete_post' post.id %}" method=DELETE>
+                <form action="{% url 'delete_post' post.id %}" method=DELETE >
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                    <button type="submit" class="btn btn-light">
+                        <img src="{% static 'twitter/assets/delete.svg' %}" width="25px" height="25px">
+                    </button>
                 </form>
             {% endif %}
         </div>
@@ -17,11 +21,16 @@
         <div class="d-flex">
             <form action="{% url 'like' post.id %}" method=POST>
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                    {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
+                <button type="submit" class="btn" id="Like">
+
+                    {% if user in post.likes.all %}
+                        <img src="{% static 'twitter/assets/like.svg' %}" width="25px" height="25px">
+                    {% else %}
+                        <img src="{% static 'twitter/assets/unlike.svg' %}" width="25px" height="25px">
+                    {% endif %}
                 </button>
             </form>
-            {{ post.likes.count }} Likes
+            <span class="likes-count">{{ post.likes.count }} Likes</span>
         </div>
     </div>
 {% empty %}
