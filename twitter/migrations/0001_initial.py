@@ -4,6 +4,7 @@ from django.conf import settings
 import django.contrib.auth.models
 import django.contrib.auth.validators
 from django.db import migrations, models
+import django.db.models.deletion
 import django.utils.timezone
 
 
@@ -32,7 +33,6 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
-                ('followings', models.ManyToManyField(blank=True, related_name='followers', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'user',
@@ -42,5 +42,26 @@ class Migration(migrations.Migration):
             managers=[
                 ('objects', django.contrib.auth.models.UserManager()),
             ],
+        ),
+        migrations.CreateModel(
+            name='FollowRelation',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('followee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='followee', to=settings.AUTH_USER_MODEL)),
+                ('follower', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='follower', to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='followings',
+            field=models.ManyToManyField(blank=True, related_name='followers', through='twitter.FollowRelation', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddConstraint(
+            model_name='followrelation',
+            constraint=models.UniqueConstraint(fields=('follower', 'followee'), name='unique_follow'),
+        ),
+        migrations.AddConstraint(
+            model_name='followrelation',
+            constraint=models.CheckConstraint(check=models.Q(('follower', models.F('followee')), _negated=True), name='prevent_reflexivity'),
         ),
     ]

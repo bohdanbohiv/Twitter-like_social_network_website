@@ -7,10 +7,31 @@ from django.db import models
 class User(AbstractUser):
     followings = models.ManyToManyField(
         'self',
+        through='FollowRelation',
         related_name='followers',
         symmetrical=False,
         blank=True
     )
+
+
+class FollowRelation(models.Model):
+    follower = models.ForeignKey(
+        User, models.CASCADE, related_name='follower'
+    )
+    followee = models.ForeignKey(
+        User, models.CASCADE, related_name='followee'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('follower', 'followee'), name='unique_follow'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(follower=models.F('followee')),
+                name='prevent_reflexivity'
+            )
+        ]
 
 
 class Post(models.Model):
