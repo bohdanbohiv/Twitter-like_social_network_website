@@ -21,7 +21,7 @@
                     {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
                 </button>
             </form>
-            {{ post.num_of_likes }} Likes
+            {{ post.likes.count }} Likes
         </div>
     </div>
 {% empty %}
