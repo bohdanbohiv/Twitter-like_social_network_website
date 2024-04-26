@@ -36,7 +36,7 @@ class FollowRelation(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, models.DO_NOTHING, related_name='posts')
-    body = models.TextField(max_length=280)
+    body = models.CharField(max_length=280)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
