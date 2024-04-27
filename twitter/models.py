@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+POST_BODY_MAX_LEN = 280
+
 # Create your models here.
 
 
@@ -36,7 +38,7 @@ class FollowRelation(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, models.DO_NOTHING, related_name='posts')
-    body = models.CharField(max_length=280)
+    body = models.CharField(max_length=POST_BODY_MAX_LEN)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 

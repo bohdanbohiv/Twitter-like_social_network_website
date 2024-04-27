@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import password_validators_help_text_html, validate_password
@@ -7,7 +9,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import format_html, format_html_join
 
-from .models import Post, User
+from .models import Post, User, POST_BODY_MAX_LEN
 
 # Create your views here.
 
@@ -124,6 +126,11 @@ def follow(request: HttpRequest, pk: int) -> HttpResponseRedirect:
 
 @login_required
 def post(request: HttpRequest) -> HttpResponse:
+    if len(request.POST['body']) > POST_BODY_MAX_LEN:
+        return HttpResponse(
+            'Post body is too long',
+            status=HTTPStatus.REQUEST_ENTITY_TOO_LARGE
+        )
     post = Post(author=request.user, body=request.POST['body'])
     post.save()
     return redirect(request.META.get('HTTP_REFERER', 'index'))
