@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import password_validators_help_text_html, validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import format_html, format_html_join
 
@@ -12,7 +12,7 @@ from .models import Post, User
 # Create your views here.
 
 
-def index(request: HttpRequest):
+def index(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
         posts = Post.objects.filter(author__in=request.user.followings.all())
     else:
@@ -24,7 +24,7 @@ def index(request: HttpRequest):
     )
 
 
-def register(request: HttpRequest):
+def register(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -65,7 +65,7 @@ def register(request: HttpRequest):
     )
 
 
-def login_view(request: HttpRequest):
+def login_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -82,12 +82,12 @@ def login_view(request: HttpRequest):
     return render(request, 'twitter/login.html')
 
 
-def logout_view(request: HttpRequest):
+def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     logout(request)
     return redirect('index')
 
 
-def profile(request: HttpRequest, pk: int):
+def profile(request: HttpRequest, pk: int) -> HttpResponse:
     user = get_object_or_404(User, id=pk)
     return render(
         request,
@@ -99,7 +99,7 @@ def profile(request: HttpRequest, pk: int):
     )
 
 
-def search_user(request: HttpRequest):
+def search_user(request: HttpRequest) -> HttpResponse:
     search = request.GET['search']
     searched = User.objects.filter(username__contains=search)
     return render(
@@ -110,7 +110,7 @@ def search_user(request: HttpRequest):
 
 
 @login_required
-def follow(request: HttpRequest, pk: int):
+def follow(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     user = get_object_or_404(User, id=pk)
     if user == request.user:
         raise PermissionDenied
@@ -123,14 +123,14 @@ def follow(request: HttpRequest, pk: int):
 
 
 @login_required
-def post(request: HttpRequest):
+def post(request: HttpRequest) -> HttpResponse:
     post = Post(author=request.user, body=request.POST['body'])
     post.save()
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 
 @login_required
-def delete_post(request: HttpRequest, pk: int):
+def delete_post(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     post = get_object_or_404(Post, id=pk)
     if request.user == post.author:
         post.delete()
@@ -139,7 +139,7 @@ def delete_post(request: HttpRequest, pk: int):
 
 
 @login_required
-def like(request: HttpRequest, pk: int):
+def like(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     post = get_object_or_404(Post, id=pk)
     if request.user in post.likes.all():
         post.likes.remove(request.user)
@@ -148,7 +148,7 @@ def like(request: HttpRequest, pk: int):
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 
-def followings(request: HttpRequest, pk: int):
+def followings(request: HttpRequest, pk: int) -> HttpResponse:
     user = get_object_or_404(User, id=pk)
     return render(
         request,
@@ -157,7 +157,7 @@ def followings(request: HttpRequest, pk: int):
     )
 
 
-def followers(request: HttpRequest, pk: int):
+def followers(request: HttpRequest, pk: int) -> HttpResponse:
     user = get_object_or_404(User, id=pk)
     return render(
         request,
