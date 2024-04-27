@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.test import TestCase
 
-from .models import User, FollowRelation
+from .models import User, FollowRelation, Post
 
 # Create your tests here.
 
@@ -61,3 +61,47 @@ class FollowRelationModelTests(TestCase):
         self.u1.followings.remove(self.u2)
         self.assertEqual(self.u1.followings.count(), 0)
         self.assertEqual(self.u2.followers.count(), 0)
+
+
+class PostModelTests(TestCase):
+    def setUp(self):
+        self.u1 = User.objects.create_user('user1', password='password123')
+        self.u2 = User.objects.create_user('user2', password='password456')
+        self.p = Post.objects.create(
+            author=self.u1, body='This is a test post.'
+        )
+
+    def test_post_creation(self):
+        self.assertEqual(self.p.author, self.u1)
+        self.assertEqual(self.p.body, 'This is a test post.')
+
+    def test_like_a_post(self):
+        self.p.likes.add(self.u2)
+        self.assertEqual(self.p.likes.count(), 1)
+        self.assertIn(self.u2, self.p.likes.all())
+
+    def test_unlike_a_post(self):
+        self.p.likes.add(self.u2)
+        self.p.likes.remove(self.u2)
+        self.assertEqual(self.p.likes.count(), 0)
+        self.assertNotIn(self.u2, self.p.likes.all())
+
+    def test_blank_likes_field(self):
+        self.assertEqual(self.p.likes.count(), 0)
+
+    def test_like_post_by_multiple_users(self):
+        self.u2.likes.add(self.p)
+        another_user = User.objects.create_user(
+            'user3', password='password789'
+        )
+        another_user.likes.add(self.p)
+        self.assertEqual(self.p.likes.count(), 2)
+
+    def test_str_post(self):
+        self.assertTrue(str(self.p).startswith('user1 ('))
+        self.assertTrue(str(self.p).endswith('): This is a ...'))
+
+    def test_str_short_post(self):
+        short_post = Post.objects.create(author=self.u1, body='short')
+        self.assertTrue(str(short_post).startswith('user1 ('))
+        self.assertTrue(str(short_post).endswith('): short'))
