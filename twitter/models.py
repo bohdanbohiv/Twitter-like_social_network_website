@@ -41,5 +41,7 @@ class Post(models.Model):
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self) -> str:
-        return (f'{self.author} ({self.created_at:%Y-%m-%d %H:%M})'
-                f': {self.body[:10]}...')
+        string = f'{self.author} ({self.created_at:%Y-%m-%d %H:%M}): '
+        if len(self.body) > 13:
+            return f'{string}{self.body[:10]}...'
+        return f'{string}{self.body}'
