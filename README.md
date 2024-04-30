@@ -1,1 +1,1 @@
-![ci workflow](https://github.com/bohdanbohiv/social-network-webapp/blob/master/.github/workflows/main.yml/badge.svg)
+[![CI](https://github.com/bohdanbohiv/social-network-webapp/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/bohdanbohiv/social-network-webapp/actions/workflows/main.yml)
