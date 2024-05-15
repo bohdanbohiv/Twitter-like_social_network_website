@@ -1,3 +1,8 @@
+body, html{
+    height:100%;
+    margin: 0;
+}
+
 #Like{
     margin-bottom: 10px;
     margin-left: 10px;
@@ -16,3 +21,10 @@
 #userinfo{
     padding-top:7px;
 }
+
+
+.gradient{
+    background: linear-gradient(to bottom, indigo, purple) !important;
+}
+
+

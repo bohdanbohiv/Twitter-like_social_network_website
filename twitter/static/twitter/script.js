@@ -1,6 +1,6 @@
-function showmsg(){
-    console.log("liked");
-}
-
 const like = document.getElementById('Like');
-like.addEventListener('click', showmsg)
+like.addEventListener('submit', function(event){
+    event.preventDefault();
+});
+
+console.log('hee')

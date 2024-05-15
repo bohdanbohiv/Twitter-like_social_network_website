@@ -1,27 +1,55 @@
 {% extends 'twitter/layout.html' %}
-
+{% load static %}
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-    <form method=POST>
-        {% csrf_token %}
-        <div class="form-group">
-            <input type="text" class="form-control" autofocus name="username" placeholder="Username">
+    <div class="container-fluid h-100 w-100" style="padding:0;">
+        <div class="row no-gutters" > 
+            <div class="col-md-6">  
+                <div class="d-flex justify-content-center">
+                    <h1>Let's get started</h1>
+                </div>    
+                <div class="d-flex justify-content-center">
+                    <span class="text-muted">Write your email and password to register</span>
+                </div> 
+                
+                <form method=POST>
+                    {% csrf_token %}
+                    
+                    <div class="form-group pt-1">
+                        <span  style="font-weight:bold;">Username</span>
+                        <input type="text" class="form-control" autofocus name="username" placeholder="Username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <span style="font-weight:bold;">Email</span>
+                        <input type="email" class="form-control" name="email" placeholder="Email Address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <span style="font-weight:bold">Password</span>
+                        <input type="password" class="form-control" name="password" placeholder="Password" minlength="8">
+                    </div>
+                    
+                    <div class="form-group">
+                        <span style="font-weight:bold">Confirm</span>
+                        <input type="password" class="form-control" name="confirmation" placeholder="Confirm Password">
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <input type="submit" class="btn btn-primary" value="Register">
+                    </div>
+                </form>
+                <!-- {% if message %}
+                    {{ message }}
+                {% endif %} -->
+                <span class="text-muted">Already have an account?</span> <a href="{% url 'login' %}">Log In here.</a>
+            </div> 
+            <div class="col-md-6 pt-5" style="background: linear-gradient(to bottom, indigo, purple); height:100%">
+                <img src="{% static 'twitter/assets/rocket-white.png' %}" width="600px" height="400px">
+            </div>
+
+            
         </div>
-        <div class="form-group">
-            <input type="email" class="form-control" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="Password" minlength="8">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input type="submit" class="btn btn-primary" value="Register">
-    </form>
-    {% if message %}
-        {{ message }}
-    {% endif %}
+    </div>        
 {% endblock %}
+
