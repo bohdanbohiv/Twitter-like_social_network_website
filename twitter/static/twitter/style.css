@@ -23,8 +23,10 @@ body, html{
 }
 
 
-.gradient{
-    background: linear-gradient(to bottom, indigo, purple) !important;
+#gradient{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
