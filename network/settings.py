@@ -81,7 +81,7 @@ DATABASES = {
         'USER': 'rabbituser',
         'PASSWORD': 'dbpwd4rabbit',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '5433'
     }
 }
 
