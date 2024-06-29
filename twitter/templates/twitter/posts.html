@@ -7,7 +7,7 @@
                 <a href="{% url 'profile' post.author.id %}">{{ post.author.username }}</a> at {{ post.created_at }}
             </span>
             {% if post.author == user %}
-                <form action="{% url 'delete_post' post.id %}" method=DELETE >
+                <form action="{% url 'delete_post' post.id %}" method=POST>
                     {% csrf_token %}
                     <button type="submit" class="btn btn-light">
                         <img src="{% static 'twitter/assets/delete.svg' %}" width="25px" height="25px">

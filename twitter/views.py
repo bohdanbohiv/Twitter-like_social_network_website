@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import format_html, format_html_join
 
 from .models import Post, User, POST_BODY_MAX_LEN
+from .util import post_method_required
 
 # Create your views here.
 
@@ -112,6 +113,7 @@ def search_user(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
+@post_method_required
 def follow(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     user = get_object_or_404(User, id=pk)
     if user == request.user:
@@ -125,6 +127,7 @@ def follow(request: HttpRequest, pk: int) -> HttpResponseRedirect:
 
 
 @login_required
+@post_method_required
 def post(request: HttpRequest) -> HttpResponse:
     if len(request.POST['body']) > POST_BODY_MAX_LEN:
         return HttpResponse(
@@ -137,6 +140,7 @@ def post(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
+@post_method_required
 def delete_post(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     post = get_object_or_404(Post, id=pk)
     if request.user == post.author:
@@ -146,6 +150,7 @@ def delete_post(request: HttpRequest, pk: int) -> HttpResponseRedirect:
 
 
 @login_required
+@post_method_required
 def like(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     post = get_object_or_404(Post, id=pk)
     if request.user in post.likes.all():
