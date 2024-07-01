@@ -1,9 +1,9 @@
 {% load static %}
-{% for post in posts %}
 
+{% for post in posts %}
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <span id="userinfo">
+            <span class="userinfo">
                 <a href="{% url 'profile' post.author.id %}">{{ post.author.username }}</a> at {{ post.created_at }}
             </span>
             {% if post.author == user %}
@@ -21,8 +21,7 @@
         <div class="d-flex">
             <form action="{% url 'like' post.id %}" method=POST>
                 {% csrf_token %}
-                <button type="submit" class="btn" id="Like">
-
+                <button type="submit" class="btn like">
                     {% if user in post.likes.all %}
                         <img src="{% static 'twitter/assets/like.svg' %}" width="25px" height="25px">
                     {% else %}

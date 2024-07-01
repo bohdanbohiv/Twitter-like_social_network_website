@@ -4,33 +4,33 @@
 
 {% block body %}
     <div class="container-fluid h-100 w-100" style="padding:0;">
-        <div class="row no-gutters h-100" > 
-            <div class="col-md-6 d-flex flex-column justify-content-center pb-5">  
+        <div class="row no-gutters h-100">
+            <div class="col-md-6 d-flex flex-column justify-content-center pb-5">
                 <div class="d-flex  justify-content-center">
                     <h1 class="">Let's get started</h1>
-                </div>    
+                </div>
                 <div class="d-flex justify-content-center">
                     <span class="text-muted">Write your email and password to register</span>
-                </div> 
-                
+                </div>
+
                 <form method=POST class="px-5">
                     {% csrf_token %}
-                    
+
                     <div class="form-group pt-1">
-                        <span  style="font-weight:bold;">Username</span>
+                        <span style="font-weight:bold;">Username</span>
                         <input type="text" class="form-control" autofocus name="username" placeholder="Username">
                     </div>
-                    
+
                     <div class="form-group">
                         <span style="font-weight:bold;">Email</span>
                         <input type="email" class="form-control" name="email" placeholder="Email Address">
                     </div>
-                    
+
                     <div class="form-group">
                         <span style="font-weight:bold">Password</span>
                         <input type="password" class="form-control" name="password" placeholder="Password" minlength="8">
                     </div>
-                    
+
                     <div class="form-group">
                         <span style="font-weight:bold">Confirm</span>
                         <input type="password" class="form-control" name="confirmation" placeholder="Confirm Password">
@@ -39,17 +39,16 @@
                         <input type="submit" class="btn btn-primary font-weight-bold" value="Register">
                     </div>
                 </form>
-                 {% if message %}
+                {% if message %}
                     {{ message }}
-                {% endif %} 
-                <span class="text-muted px-5">Already have an account? <a href="{% url 'login' %}">Log In here.</a></span> 
-            </div> 
-            <div class="col-md-6 pt-5" id="gradient" style="background: linear-gradient(to bottom, rgb(59, 24, 85), rgb(102, 47, 102)); height:100%">
+                {% endif %}
+                <span class="text-muted px-5">Already have an account? <a href="{% url 'login' %}">Log In here.</a></span>
+            </div>
+            <div class="col-md-6 pt-5" id="gradient"
+                style="background: linear-gradient(to bottom, rgb(59, 24, 85), rgb(102, 47, 102)); height:100%">
                 <img src="{% static 'twitter/assets/rocket-bogrik.png' %}" width="650px" height="900px">
             </div>
 
-            
         </div>
-    </div>        
+    </div>
 {% endblock %}
-

@@ -28,15 +28,16 @@
                     </div>
                 </form>
 
-                <span class="text-muted pt-2">Don't have an account? <a href="{% url 'register' %}">Register here.</a></span>
+                <span class="text-muted pt-2">Don't have an account? <a href="{% url 'register' %}">Register
+                        here.</a></span>
             </div>
-            <div class="col-md-6 pt-5" id="gradient" style="background: linear-gradient(to bottom, rgb(102, 47, 102), rgb(59, 24, 85)); height:100%">
+            <div class="col-md-6 pt-5" id="gradient"
+                style="background: linear-gradient(to bottom, rgb(102, 47, 102), rgb(59, 24, 85)); height:100%">
                 <img src="{% static 'twitter/assets/rocket-bogrik.png' %}" width="650px" height="900px">
             </div>
         </div>
     </div>
-    
-    
+
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
